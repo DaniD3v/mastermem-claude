@@ -35,7 +35,7 @@ case "$os" in linux | darwin) ;; *)
 esac
 # The release this script belongs to (publish.sh sets the tag) and its signing key (allowed_signers): the helper is
 # only run when SHA256SUMS carries a valid signature of that key and lists the downloaded file with its hash.
-version=v0.8.5
+version=v0.9.0
 signer='mastermem-release ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIN2CxwEGYaZbQAYM/mlghTalJzTqbTu+5YAUKzqtz5mD'
 repo=${MASTERMEM_RELEASE_BASE:-https://raw.githubusercontent.com/mastermem/mastermem-claude/$version}
 tmp=$(mktemp -d)
