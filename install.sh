@@ -18,6 +18,11 @@ if [ $# -gt 2 ]; then
   echo "mastermem: do not pass the token as an argument; leave it out (browser login) or set MASTERMEM_TOKEN" >&2
   exit 2
 fi
+if [ "$client" = codex ]; then
+  # Install for the user, even when launched with a workspace-local Codex home.
+  CODEX_HOME=$HOME/.codex
+  export CODEX_HOME
+fi
 tmp=
 trap '[ -z "$tmp" ] || rm -rf "$tmp"' EXIT
 trap 'exit 130' INT TERM
