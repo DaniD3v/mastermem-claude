@@ -18,6 +18,25 @@ sends it from the start, the server creates it on approve). The token goes into
 
 Another team or a revoked token: delete that file and start a new session.
 
+### Codex and Cursor
+
+Run the install command shown in your mastermem dashboard. For Codex, the installer
+also installs the `mastermem` skill in `~/.agents/skills/mastermem/SKILL.md`, so it is
+available in every workspace for your user, including sessions with a custom
+`CODEX_HOME`. Select it with `/skills` or invoke `$mastermem`; restart Codex if the
+skill does not appear. See [Codex skill locations](https://developers.openai.com/codex/skills/).
+
+Rerun the installer to add the shared skill to an existing installation. The signed
+helper still manages hooks and the MCP connection in the client's configuration.
+Cursor installs do not add a Codex skill.
+For an unreleased installer fix, use `install.sh` from the branch containing it;
+the dashboard's version-pinned command continues to use the published installer.
+
+Installer regression checks: `python3 -m unittest discover -s tests -v`. These use a
+signed disposable test helper and never execute the bundled release binaries.
+With Codex installed, run `with-env { MASTERMEM_CODEX_E2E: "1" } { python3 -m unittest discover -s tests -v }` (Nushell)
+to also verify user-scope skill discovery from two workspaces through Codex's app server.
+
 ## What it does
 
 - Hooks on session start, prompt, tool batch, shell commands (Bash, PowerShell) and Stop send the hook

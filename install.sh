@@ -61,3 +61,35 @@ if [ -n "$token" ]; then
 else
   "$tmp/mastermem-hook" install "$client" --server "$server" --login </dev/null
 fi
+
+if [ "$client" = codex ]; then
+  # User skills are shared across projects, including sessions using a separate
+  # CODEX_HOME. Embed the skill so curl | sh installs need no extra download.
+  skill_dir=$HOME/.agents/skills/mastermem
+  mkdir -p "$skill_dir"
+  cat >"$tmp/SKILL.md" <<'SKILL'
+---
+name: mastermem
+description: Search and manage mastermem memories, spaces, rules and procedures when the user asks to use mastermem.
+---
+
+Use the connected mastermem MCP tools for the user's request.
+
+With no specific request, call memory_scopes and briefly show the available
+spaces and actions: search, read, save, update or retire memories; inspect rules
+and procedures. Do not change anything just because this skill was invoked.
+
+Search with memory_search before creating a memory to avoid duplicates. Read
+matching memories with memory_get; use memory_update to correct an existing
+memory. Choose a writable space from memory_scopes when saving a new memory.
+
+For rule or procedure changes, use rule_propose or procedure_propose and return
+the confirmation link. A proposal takes effect only after dashboard confirmation.
+
+If the mastermem tools are unavailable, report that the MCP connection needs
+attention. Never read or display stored credentials to diagnose it.
+SKILL
+  cp "$tmp/SKILL.md" "$skill_dir/SKILL.md"
+  echo "mastermem: installed the user skill in $skill_dir (all workspaces)."
+  echo 'Next: restart Codex if needed, then select mastermem with /skills or type $mastermem.'
+fi
