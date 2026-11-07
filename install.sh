@@ -18,8 +18,6 @@ if [ $# -gt 2 ]; then
   echo "mastermem: do not pass the token as an argument; leave it out (browser login) or set MASTERMEM_TOKEN" >&2
   exit 2
 fi
-# Install for the user, even when launched with a workspace-local Codex home.
-export CODEX_HOME=$HOME/.codex
 tmp=
 trap '[ -z "$tmp" ] || rm -rf "$tmp"' EXIT
 trap 'exit 130' INT TERM
@@ -62,4 +60,23 @@ if [ -n "$token" ]; then
   printf '%s\n' "$token" | "$tmp/mastermem-hook" install "$client" --server "$server"
 else
   "$tmp/mastermem-hook" install "$client" --server "$server" --login </dev/null
+fi
+
+if [ "$client" = codex ]; then
+  prompts_dir=${CODEX_HOME:-$HOME/.codex}/prompts
+  mkdir -p "$prompts_dir"
+  cat >"$prompts_dir/mastermem-switch.md" <<'PROMPT'
+---
+description: Switch mastermem teams, or list your teams
+argument-hint: "[team]"
+---
+
+Run the installed mastermem-hook in the bin directory under CODEX_HOME
+(default: ~/.codex), with arguments `switch --client codex`.
+If a team is supplied below, pass it as one safely quoted argument; otherwise
+omit it to list teams. Show the result briefly. Do not call mastermem MCP tools.
+
+Team: $ARGUMENTS
+PROMPT
+  echo 'mastermem: restart Codex, then use /prompts:mastermem-switch [team].'
 fi
